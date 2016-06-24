@@ -1,24 +1,5 @@
 library(parallel)
 
-##------------------------------------------------------------------------------
-##' Wrapper around mcmapply to track progress
-##'
-##' Based on http://stackoverflow.com/questions/10984556
-##'
-##' @param FUN       the function to be applied in parallel to ....
-##' @param ...       arguments to vectorize over (vectors or lists of strictly positive length, or all of zero length).
-##' @param MoreArgs  a list of other arguments to FUN.
-##' @param mc.preschedule see mcmapply
-##' @param mc.set.seed see mcmapply
-##' @param mc.silent see mcmapply
-##' @param mc.cores see mcmapply
-##' @param mc.cleanup see mcmapply
-##' @param mc.progress track progress?
-##' @param mc.style    style of progress bar (see txtProgressBar)
-##'
-##' @examples
-##' x <- pbmcmapply(function(i, y) Sys.sleep(0.01), 1:1000)
-##------------------------------------------------------------------------------
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL,
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.silent = FALSE, mc.cores = getOption("mc.cores", 2L),
@@ -26,7 +7,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL,
 {
   if (mc.progress) {
     f <- fifo(tempfile(), open="w+b", blocking=T)
-    p <- parallel:::mcfork()
+    p <- parallel::makeForkCluster(nnodes = 1)
     length <- max(mapply(function(element) {
       if (is.null(nrow(element))) {
         return(length(element))
@@ -44,7 +25,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL,
         setTxtProgressBar(pb, progress)
       }
       cat("\n")
-      parallel:::mcexit()
+      parallel::stopCluster()
     }
   }
 

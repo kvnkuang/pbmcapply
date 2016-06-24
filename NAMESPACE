@@ -1,1 +1,3 @@
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("parallel", "mclapply", "mcmapply")
 export(pbmclapply, pbmcmapply)
