@@ -1,0 +1,10 @@
+Package: pbmcapply
+Type: Package
+Title: Tracking the progress of mc*apply with progress bar
+Version: 0.1.0
+Author: Kevin Kuang
+Maintainer: Kevin kuang <kvn.kuang@mail.utoronto.ca>
+Description: A light-weight package helps you track and visualize
+  the progress of parallel version of vectorized R functions (mc*apply).
+License: GPL-2
+LazyData: TRUE
