@@ -8,5 +8,5 @@ Description: A light-weight package helps you track and visualize
   the progress of parallel version of vectorized R functions (mc*apply).
 Depends: utils, parallel
 BugReports: https://github.com/kvnkuang/pbmcapply
-License: MIT
+License: MIT + file LICENSE
 LazyData: TRUE
