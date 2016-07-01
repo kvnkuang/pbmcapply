@@ -3,6 +3,8 @@
 \title{Tracking mcmapply with progress bar}
 \description{
 \code{pbmcmapply} is a wrapper around the \code{mcmapply} function. It adds a progress bar to \code{mcmapply} function.
+
+\strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
 pbmcmapply(FUN, ..., MoreArgs = NULL,
