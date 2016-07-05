@@ -3,6 +3,8 @@
 \title{Tracking mclapply with progress bar}
 \description{
 \code{pbmclapply} is a wrapper around the \code{mclapply} function. It adds a progress bar to \code{mclapply} function.
+
+\strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
 pbmclapply(X, FUN, ...,
@@ -39,11 +41,5 @@ lazySqrt <- function(num) {
   return(sqrt(num))
 }
 # Get the sqrt of 1-10 in parallel
-if (length(grep("windows", Sys.info()["sysname"], ignore.case = TRUE))) {
-  # Windows Machine does not support mc(*)apply
-  result <- pbmclapply(1:10, lazySqrt, mc.cores = 1)
-} else {
-  # Get the sqrt of 1-10 in parallel
-  result <- pbmclapply(1:10, lazySqrt)
-}
+result <- pbmclapply(1:10, lazySqrt)
 }
