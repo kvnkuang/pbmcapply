@@ -38,5 +38,10 @@ lazySqrt <- function(num) {
   return(sqrt(num))
 }
 # Get the sqrt of 1-10 in parallel
+if (length(grep("windows", Sys.info()["sysname"], ignore.case = TRUE))) {
+# Windows Machine does not support mc(*)apply
+result <- pbmcmapply(lazySqrt, 1:10, mc.cores = 1)
+} else {
 result <- pbmcmapply(lazySqrt, 1:10)
+}
 }

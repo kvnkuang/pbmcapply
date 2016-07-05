@@ -1,8 +1,5 @@
 library(parallel)
 
-# Suppress the "Undefined global functions or variables" note.
-globalVariables(c("progress", "pb"))
-
 pbmcmapply <- function(FUN,
                        ...,
                        MoreArgs = NULL,
@@ -25,10 +22,11 @@ pbmcmapply <- function(FUN,
     }, list(...)))
 
     # Create a separate worker process to monitor the progress of mcmapply
-    cl <- makeCluster(1, outfile = "", useXDR = T)
+    cl <- makeCluster(1, useXDR = T)
     clusterCall(cl, function(length) {
       .GlobalEnv$progress <- 0
-      .GlobalEnv$pb <- txtProgressBar(0, length, style = mc.style)
+      text <- capture.output(.GlobalEnv$pb <- txtProgressBar(0, length, style = mc.style))
+      cat(text, file = 1)
       setTxtProgressBar(.GlobalEnv$pb, 0)
       return(0)
     }, length)
@@ -41,7 +39,8 @@ pbmcmapply <- function(FUN,
         if (mc.progress) {
           clusterCall(cl, function() {
             .GlobalEnv$progress <- .GlobalEnv$progress + 1
-            setTxtProgressBar(.GlobalEnv$pb, .GlobalEnv$progress)
+            text <- capture.output(setTxtProgressBar(.GlobalEnv$pb, .GlobalEnv$progress))
+            cat(text, file = 1)
             return(0)
           })
         }

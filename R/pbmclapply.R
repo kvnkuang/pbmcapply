@@ -1,8 +1,5 @@
 library(parallel)
 
-# Suppress the "Undefined global functions or variables" note.
-globalVariables(c("progress", "pb"))
-
 pbmclapply <- function(X,
                        FUN,
                        ...,
@@ -20,12 +17,12 @@ pbmclapply <- function(X,
 
   if (mc.progress) {
     # Create a separate worker process to monitor the progress of mclapply
-    cl <- makeCluster(1, outfile = "", useXDR = T)
+    cl <- makeCluster(1, useXDR = T)
     clusterCall(cl, function(length) {
       .GlobalEnv$progress <- 0
-      .GlobalEnv$pb <- txtProgressBar(0, length, style = mc.style)
+      text <- capture.output(.GlobalEnv$pb <- txtProgressBar(0, length, style = mc.style))
+      cat(text, file = 1)
       setTxtProgressBar(.GlobalEnv$pb, 0)
-      return(0)
     }, length(X))
   }
 
@@ -36,8 +33,8 @@ pbmclapply <- function(X,
         # Inform the monitor worker process about the completion
         clusterCall(cl, function() {
           .GlobalEnv$progress <- .GlobalEnv$progress + 1
-          setTxtProgressBar(.GlobalEnv$pb, .GlobalEnv$progress)
-          return(0)
+          text <- capture.output(setTxtProgressBar(.GlobalEnv$pb, .GlobalEnv$progress))
+          cat(text, file = 1)
         })
       }
       return(res)
