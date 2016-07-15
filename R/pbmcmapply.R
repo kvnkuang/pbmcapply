@@ -1,50 +1,53 @@
+library(future)
 library(parallel)
 
-pbmcmapply <- function(FUN, ..., MoreArgs = NULL,
-                       mc.preschedule = TRUE, mc.set.seed = TRUE,
-                       mc.silent = FALSE, mc.cores = getOption("mc.cores", 2L),
-                       mc.cleanup = TRUE, mc.progress=TRUE, mc.style=3)
-{
-  if (mc.progress) {
-    f <- fifo(tempfile(), open="w+b", blocking=T)
-    p <- parallel::makeForkCluster(nnodes = 1)
-    length <- max(mapply(function(element) {
-      if (is.null(nrow(element))) {
-        return(length(element))
-      } else {
-        return(nrow(element))
-      }
-    }, list(...)))
-    pb <- txtProgressBar(0, length, style=mc.style)
-    setTxtProgressBar(pb, 0)
-    progress <- 0
-    if (inherits(p, "masterProcess")) {
+PORT = 6311
+
+pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
+
+  plan(multiprocess)
+
+  progressMonitor <- futureCall(function(FUN, MoreArgs, mc.cores, ...) {
+    socketServer <- socketConnection(open = "wb", port = PORT, blocking = T, server = T)
+    tryCatch(result <- mcmapply(function(...) {
+      res <- FUN(...)
+      writeBin(1, socketServer)
+      return(res)
+    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores),
+    finally = {
+      close(socketServer)
+    })
+
+    return(result)
+  }, args = list(FUN, MoreArgs, mc.cores, ...))
+
+  length <- max(mapply(function(element) {
+    if (is.null(nrow(element))) {
+      return(length(element))
+    } else {
+      return(nrow(element))
+    }
+  }, list(...)))
+  pb <- txtProgressBar(0, length, style = mc.style)
+  setTxtProgressBar(pb, 0)
+  progress <- 0
+
+  # Create a socket client and update progress bar accordingly
+  isCreated <- F
+  while(!isCreated) {
+    Sys.sleep(0.5)
+    try(socketClient <- socketConnection(open = "rb", port = PORT, blocking = T, server = F), silent = T)
+    if (exists("socketClient")) {
+      isCreated <- T
       while (progress < length) {
-        readBin(f, "double")
+        readBin(socketClient, "double")
         progress <- progress + 1
         setTxtProgressBar(pb, progress)
       }
-      cat("\n")
-      parallel::stopCluster()
+      close(socketClient)
     }
   }
 
-  tryCatch({
-    result <- mcmapply(function(...) {
-      res <- FUN(...)
-      if (mc.progress) {
-        writeBin(1, f)
-      }
-      res
-    }, ..., MoreArgs = MoreArgs,
-    mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-    mc.silent = mc.silent, mc.cores = mc.cores, mc.cleanup = mc.cleanup
-    )
-  }, finally = {
-    if (mc.progress) {
-      close(f)
-    }
-  })
-
-  return(result)
+  # Retrieve the result from the future
+  return(value(progressMonitor))
 }
