@@ -1,3 +1,4 @@
+importFrom("future", "futureCall", "value", "plan", "multiprocess")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("parallel", "mclapply", "mcmapply")
 export(pbmclapply, pbmcmapply)
