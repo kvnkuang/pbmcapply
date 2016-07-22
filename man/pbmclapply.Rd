@@ -33,12 +33,12 @@ lazySqrt <- function(num) {
   Sys.sleep(runif(1))
   return(sqrt(num))
 }
-# Get the sqrt of 1-10 in parallel
+# Get the sqrt of 1-5 in parallel
 if (length(grep("windows", Sys.info()["sysname"], ignore.case = TRUE))) {
   # Windows Machine does not support mc(*)apply
-  result <- pbmclapply(1:10, lazySqrt, mc.cores = 1)
+  result <- pbmclapply(1:5, lazySqrt, mc.cores = 1)
 } else {
-  # Get the sqrt of 1-10 in parallel
-  result <- pbmclapply(1:10, lazySqrt)
+  # Get the sqrt of 1-5 in parallel
+  result <- pbmclapply(1:5, lazySqrt)
 }
 }
