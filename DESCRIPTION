@@ -9,6 +9,7 @@ Description: A light-weight package helps you track and visualize
   The package works on *nix (Linux, Unix such as macOS) system only due to
   the lack of fork() functionality, which is essential for mcapply, on Windows.
 Depends: utils, parallel, future
+OS_type: unix
 BugReports: https://github.com/kvnkuang/pbmcapply/issues
 URL: https://github.com/kvnkuang/pbmcapply
 License: MIT + file LICENSE
