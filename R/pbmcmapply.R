@@ -1,6 +1,3 @@
-library(future)
-library(parallel)
-
 PORT = 6311
 
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
