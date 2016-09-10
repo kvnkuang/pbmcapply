@@ -2,9 +2,17 @@ PORT = 6311
 
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
 
+  # Set up plan
+  originalPlan <- plan("list")
+  on.exit(plan(originalPlan))
   plan(multiprocess)
 
-  progressMonitor <- futureCall(function(FUN, MoreArgs, mc.cores, ...) {
+  # If not in interactive mode, just pass to mclapply
+  if (!interactive()) {
+    return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
+  }
+
+  progressMonitor <- futureCall(function(FUN, ..., MoreArgs, mc.cores) {
     socketServer <- socketConnection(open = "wb", port = PORT, blocking = T, server = T)
     tryCatch(result <- mcmapply(function(...) {
       res <- FUN(...)
@@ -16,8 +24,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOpt
     })
 
     return(result)
-  }, args = list(FUN, MoreArgs, mc.cores, ...))
+  }, args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
+  # Get the max length of elements in ...
   length <- max(mapply(function(element) {
     if (is.null(nrow(element))) {
       return(length(element))

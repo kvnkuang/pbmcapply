@@ -2,13 +2,21 @@ PORT = 6311
 
 pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
 
+  # Set up plan
+  originalPlan <- plan("list")
+  on.exit(plan(originalPlan))
   plan(multiprocess)
 
   if (!is.vector(X) || is.object(X)) {
     X <- as.list(X)
   }
 
-  progressMonitor <- futureCall(function(X, FUN, mc.cores, ...) {
+  # If not in interactive mode, just pass to mclapply
+  if (!interactive()) {
+    return(mclapply(X, FUN, ..., mc.cores = mc.cores))
+  }
+
+  progressMonitor <- futureCall(function(X, FUN, ..., mc.cores) {
     socketServer <- socketConnection(open = "wb", port = PORT, blocking = T, server = T)
     tryCatch(result <- mclapply(X, function(...) {
       res <- FUN(...)
@@ -20,7 +28,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores"
     })
 
     return(result)
-  }, args = list(X, FUN, ..., mc.cores))
+  }, args = list(X, FUN, ..., mc.cores = mc.cores))
 
   length <- length(X)
   pb <- txtProgressBar(0, length, style = mc.style)
