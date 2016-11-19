@@ -2,6 +2,10 @@
 
 A package helps you track and visualize the progress of parallel version of vectorized R functions (mc*apply).
 
+![Flowchart](https://cdn-images-1.medium.com/max/2000/1*QOwcI8dNrqq-_DHXYzvhiA.jpeg)
+
+Please check this [blog article](https://kevinkuang.net/tracking-progress-in-r-ad97998c359f) for an comparasion between available methods to track progress in R.
+
 **Notice:** This package works on *nix (Linux, Unix such as macOS) only due to the lack of fork() functionality, which is essential for mcapply, on Windows.
 
 ## Installation
