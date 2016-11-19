@@ -24,7 +24,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOpt
     })
 
     return(result)
-  }, args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
+  }, globals = list(PORT = PORT), args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
   # Get the max length of elements in ...
   length <- max(mapply(function(element) {

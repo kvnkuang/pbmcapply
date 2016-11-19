@@ -28,7 +28,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores"
     })
 
     return(result)
-  }, args = list(X, FUN, ..., mc.cores = mc.cores))
+  }, globals = list(PORT = PORT), args = list(X, FUN, ..., mc.cores = mc.cores))
 
   length <- length(X)
   pb <- txtProgressBar(0, length, style = mc.style)

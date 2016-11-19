@@ -48,6 +48,6 @@ if (length(grep("windows", Sys.info()["sysname"], ignore.case = TRUE))) {
 } else {
   # Get the sqrt of 1-5 in parallel
   # result <- pbmclapply(1:5, lazySqrt)
-  # chattyResult <- pbmclappy(1:3, lazyChattySqrt, "Bob")
+  # chattyResult <- pbmclapply(1:3, lazyChattySqrt, "Bob")
 }
 }
