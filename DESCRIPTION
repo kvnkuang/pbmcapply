@@ -1,7 +1,7 @@
 Package: pbmcapply
 Type: Package
 Title: Tracking the Progress of Mc*pply with Progress Bar
-Version: 1.1.1
+Version: 1.1.2
 Author: Kevin Kuang
 Maintainer: Kevin kuang <kvn.kuang@mail.utoronto.ca>
 Description: A light-weight package helps you track and visualize
