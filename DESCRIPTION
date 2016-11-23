@@ -7,7 +7,7 @@ Maintainer: Kevin kuang <kvn.kuang@mail.utoronto.ca>
 Description: A light-weight package helps you track and visualize
   the progress of parallel version of vectorized R functions (mc*apply).
   The package works on *nix (Linux, Unix such as macOS) system only due to
-  the lack of fork() functionality, which is essential for mcapply, on Windows.
+  the lack of fork() functionality, which is essential for mc*apply, on Windows.
 Depends: utils, parallel, future
 OS_type: unix
 BugReports: https://github.com/kvnkuang/pbmcapply/issues
