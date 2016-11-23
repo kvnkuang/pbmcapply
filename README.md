@@ -19,7 +19,7 @@ Package page: https://cran.r-project.org/web/packages/pbmcapply
 Install `pbmcapply` by pasting this command in your R console:
 
 ```
-install.packages(pbmcapply)
+install.packages('pbmcapply')
 ```
 
 ### Development release on Github 
