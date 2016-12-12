@@ -54,6 +54,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOpt
     }
   }
 
+  # Print an line break to the stdout
+  cat("\n")
+
   # Retrieve the result from the future
   return(value(progressMonitor))
 }

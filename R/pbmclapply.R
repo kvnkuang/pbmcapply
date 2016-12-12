@@ -51,6 +51,9 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores"
     }
   }
 
+  # Print an line break to the stdout
+  cat("\n")
+
   # Retrieve the result from the future
   return(value(progressMonitor))
 }
