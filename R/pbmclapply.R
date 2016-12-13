@@ -1,6 +1,7 @@
 PORT = 6311
 
-pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
+pbmclapply <- function(X, FUN, ..., mc.style = 3,
+                       mc.cores =getOption("mc.cores", 2L), ignore.interactive = F) {
 
   # Set up plan
   originalPlan <- plan("list")
@@ -11,8 +12,8 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores"
     X <- as.list(X)
   }
 
-  # If not in interactive mode, just pass to mclapply
-  if (!interactive()) {
+  # If not in interactive mode and interactive state is not ignored, just pass to mclapply
+  if (!interactive() & !ignore.interactive) {
     return(mclapply(X, FUN, ..., mc.cores = mc.cores))
   }
 
@@ -50,6 +51,9 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores"
       close(socketClient)
     }
   }
+
+  # Print an line break to the stdout
+  cat("\n")
 
   # Retrieve the result from the future
   return(value(progressMonitor))

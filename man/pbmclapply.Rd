@@ -7,11 +7,13 @@
 \strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
-pbmclapply(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L))
+pbmclapply(X, FUN, ...,
+           mc.style = 3, mc.cores =getOption("mc.cores", 2L),
+           ignore.interactive = F)
 }
 \arguments{
   \item{X}{
-  a vector (atomic or list) or an expressions vector. Otherobjects (including classed objects) will be coerced by \code{'as.list'}.
+  a vector (atomic or list) or an expressions vector. Other objects (including classed objects) will be coerced by \code{'as.list'}.
   }
   \item{FUN}{
   the function to be applied to.
@@ -25,29 +27,27 @@ pbmclapply(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L))
   \item{mc.style}{
   style of the progress bar. See txtProgressBar.
   }
+  \item{ignore.interactive}{
+  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript).
+  }
 }
 \examples{
 # A lazy sqrt function which doesn't care about efficiency
 lazySqrt <- function(num) {
-  # Sleep randomly between 0 to 1 second
-  Sys.sleep(runif(1))
+  # Sleep randomly between 0 to 0.5 second
+  Sys.sleep(runif(0.5))
   return(sqrt(num))
 }
+
 # A lazy and chatty sqrt function.
 # An example of passing arguments to pbmclapply.
 lazyChattySqrt <- function(num, name) {
-  # Sleep randomly between 0 to 1 second
-  Sys.sleep(runif(1))
+  # Sleep randomly between 0 to 0.5 second
+  Sys.sleep(runif(0.5))
   return(sprintf("Hello \%s, the sqrt of \%f is \%f.", toString(name), num, sqrt(num)))
 }
-# Get the sqrt of 1-5 in parallel
-if (length(grep("windows", Sys.info()["sysname"], ignore.case = TRUE))) {
-  # Windows Machine does not support mc(*)apply
-  # result <- pbmclapply(1:3, lazySqrt, mc.cores = 1)
-  # chattyResult <- pbmclappy(1:3, lazyChattySqrt, "Bob", mc.cores = 1)
-} else {
-  # Get the sqrt of 1-5 in parallel
-  # result <- pbmclapply(1:5, lazySqrt)
-  # chattyResult <- pbmclapply(1:3, lazyChattySqrt, "Bob")
-}
+
+# Get the sqrt of 1-3 in parallel
+result <- pbmclapply(1:3, lazySqrt)
+chattyResult <- pbmclapply(1:3, lazyChattySqrt, "Bob")
 }

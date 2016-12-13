@@ -1,6 +1,7 @@
 PORT = 6311
 
-pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L)) {
+pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
+                       mc.cores =getOption("mc.cores", 2L), ignore.interactive = F) {
 
   # Set up plan
   originalPlan <- plan("list")
@@ -8,7 +9,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOpt
   plan(multiprocess)
 
   # If not in interactive mode, just pass to mclapply
-  if (!interactive()) {
+  if (!interactive() & !ignore.interactive) {
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
   }
 
@@ -53,6 +54,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3, mc.cores =getOpt
       close(socketClient)
     }
   }
+
+  # Print an line break to the stdout
+  cat("\n")
 
   # Retrieve the result from the future
   return(value(progressMonitor))
