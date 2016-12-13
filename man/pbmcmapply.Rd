@@ -34,8 +34,8 @@ pbmcmapply(FUN, ...,
 \examples{
 # A lazy sqrt function which doesn't care about efficiency
 lazySqrt <- function(num) {
-  # Sleep randomly between 0 to 1 second
-  Sys.sleep(runif(1))
+  # Sleep randomly between 0 to 0.5 second
+  Sys.sleep(runif(0.5))
   return(sqrt(num))
 }
 
