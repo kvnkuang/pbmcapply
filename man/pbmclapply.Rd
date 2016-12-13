@@ -7,11 +7,13 @@
 \strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
-pbmclapply(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L))
+pbmclapply(X, FUN, ...,
+           mc.style = 3, mc.cores =getOption("mc.cores", 2L),
+           ignore.interactive = F)
 }
 \arguments{
   \item{X}{
-  a vector (atomic or list) or an expressions vector. Otherobjects (including classed objects) will be coerced by \code{'as.list'}.
+  a vector (atomic or list) or an expressions vector. Other objects (including classed objects) will be coerced by \code{'as.list'}.
   }
   \item{FUN}{
   the function to be applied to.
@@ -24,6 +26,9 @@ pbmclapply(X, FUN, ..., mc.style = 3, mc.cores =getOption("mc.cores", 2L))
   }
   \item{mc.style}{
   style of the progress bar. See txtProgressBar.
+  }
+  \item{ignore.interactive}{
+  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript).
   }
 }
 \examples{
