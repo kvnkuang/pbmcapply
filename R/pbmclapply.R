@@ -12,6 +12,12 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3,
     X <- as.list(X)
   }
 
+  # If the length is zero, return an empty list with a warning message
+  if (length(X) <= 0) {
+    warning("X has a length of zero.")
+    return(list())
+  }
+
   # If not in interactive mode and interactive state is not ignored, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
     return(mclapply(X, FUN, ..., mc.cores = mc.cores))

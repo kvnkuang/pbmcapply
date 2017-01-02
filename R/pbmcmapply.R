@@ -8,6 +8,20 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
   on.exit(plan(originalPlan))
   plan(multiprocess)
 
+  # Get the max length of elements in ...
+  length <- max(mapply(function(element) {
+    if (is.null(nrow(element))) {
+      return(length(element))
+    } else {
+      return(nrow(element))
+    }
+  }, list(...)))
+
+  # If the length is zero, return an empty list with a warning message
+  if (length <= 0) {
+    warning("max element has a length of zero.")
+    return(list())
+  }
   # If not in interactive mode, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
@@ -27,14 +41,6 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
     return(result)
   }, globals = list(PORT = PORT), args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
-  # Get the max length of elements in ...
-  length <- max(mapply(function(element) {
-    if (is.null(nrow(element))) {
-      return(length(element))
-    } else {
-      return(nrow(element))
-    }
-  }, list(...)))
   pb <- txtProgressBar(0, length, style = mc.style)
   setTxtProgressBar(pb, 0)
   progress <- 0
