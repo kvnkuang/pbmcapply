@@ -1,7 +1,8 @@
 PORT = 6311
 
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
-                       mc.cores =getOption("mc.cores", 2L), ignore.interactive = F) {
+                       mc.cores =getOption("mc.cores", 2L),
+                       ignore.interactive = getOption("ignore.interactive", F)) {
 
   # Set up plan
   originalPlan <- plan("list")

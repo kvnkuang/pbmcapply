@@ -9,7 +9,7 @@
 \usage{
 pbmcmapply(FUN, ...,
            MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L),
-           ignore.interactive = F)
+           ignore.interactive = getOption("ignore.interactive", F))
 }
 \arguments{
   \item{FUN}{
@@ -28,7 +28,7 @@ pbmcmapply(FUN, ...,
   style of the progress bar. See txtProgressBar.
   }
   \item{ignore.interactive}{
-  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript).
+  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript). Can be set as an option "ignore.interactive".
   }
 }
 \examples{
