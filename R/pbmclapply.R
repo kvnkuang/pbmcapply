@@ -1,7 +1,6 @@
-PORT = 6311
-
-pbmclapply <- function(X, FUN, ..., mc.style = 3,
-                       mc.cores =getOption("mc.cores", 2L), ignore.interactive = F) {
+pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
+                       mc.cores =getOption("mc.cores", 2L),
+                       ignore.interactive = getOption("ignore.interactive", F)) {
 
   # Set up plan
   originalPlan <- plan("list")
@@ -12,48 +11,28 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3,
     X <- as.list(X)
   }
 
+  length <- length(X)
+  .verifyLength("X has a length of zero.")
+
   # If not in interactive mode and interactive state is not ignored, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
     return(mclapply(X, FUN, ..., mc.cores = mc.cores))
   }
 
+  progressFifo <- .establishFifo()
+  on.exit(close(progressFifo), add = T)
+
   progressMonitor <- futureCall(function(X, FUN, ..., mc.cores) {
-    socketServer <- socketConnection(open = "wb", port = PORT, blocking = T, server = T)
     tryCatch(result <- mclapply(X, function(...) {
       res <- FUN(...)
-      writeBin(1, socketServer)
+      writeBin(1L, progressFifo)
       return(res)
-    }, ..., mc.cores = mc.cores),
-    finally = {
-      close(socketServer)
-    })
+    }, ..., mc.cores = mc.cores))
 
     return(result)
-  }, globals = list(PORT = PORT), args = list(X, FUN, ..., mc.cores = mc.cores))
+  }, globals = list(progressFifo = progressFifo), args = list(X, FUN, ..., mc.cores = mc.cores))
 
-  length <- length(X)
-  pb <- txtProgressBar(0, length, style = mc.style)
-  setTxtProgressBar(pb, 0)
-  progress <- 0
-
-  # Create a socket client and update progress bar accordingly
-  isCreated <- F
-  while(!isCreated) {
-    Sys.sleep(0.5)
-    try(socketClient <- socketConnection(open = "rb", port = PORT, blocking = T, server = F), silent = T)
-    if (exists("socketClient")) {
-      isCreated <- T
-      while (progress < length) {
-        readBin(socketClient, "double")
-        progress <- progress + 1
-        setTxtProgressBar(pb, progress)
-      }
-      close(socketClient)
-    }
-  }
-
-  # Print an line break to the stdout
-  cat("\n")
+  invisible(.updateProgress(length, progressFifo, mc.style, mc.substyle))
 
   # Retrieve the result from the future
   return(value(progressMonitor))

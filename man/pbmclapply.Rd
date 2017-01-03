@@ -8,8 +8,8 @@
 }
 \usage{
 pbmclapply(X, FUN, ...,
-           mc.style = 3, mc.cores =getOption("mc.cores", 2L),
-           ignore.interactive = F)
+           mc.style = "ETA", mc.substyle = NA, mc.cores =getOption("mc.cores", 2L),
+           ignore.interactive = getOption("ignore.interactive", F))
 }
 \arguments{
   \item{X}{
@@ -22,20 +22,20 @@ pbmclapply(X, FUN, ...,
   optional arguments to FUN.
   }
   \item{mc.cores}{
-  see mclapply.
+  see \code{\link{mclapply}}.
   }
-  \item{mc.style}{
-  style of the progress bar. See txtProgressBar.
+  \item{mc.style, mc.substyle}{
+  style of the progress bar. See \code{\link{progressBar}}.
   }
   \item{ignore.interactive}{
-  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript).
+  whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript). Can be set as an option "ignore.interactive".
   }
 }
 \examples{
 # A lazy sqrt function which doesn't care about efficiency
 lazySqrt <- function(num) {
   # Sleep randomly between 0 to 0.5 second
-  Sys.sleep(runif(0.5))
+  Sys.sleep(runif(1, 0, 0.5))
   return(sqrt(num))
 }
 
@@ -43,7 +43,7 @@ lazySqrt <- function(num) {
 # An example of passing arguments to pbmclapply.
 lazyChattySqrt <- function(num, name) {
   # Sleep randomly between 0 to 0.5 second
-  Sys.sleep(runif(0.5))
+  Sys.sleep(runif(1, 0, 0.5))
   return(sprintf("Hello \%s, the sqrt of \%f is \%f.", toString(name), num, sqrt(num)))
 }
 

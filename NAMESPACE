@@ -1,4 +1,4 @@
 importFrom("future", "futureCall", "value", "plan", "multiprocess")
-importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar", "flush.console")
 importFrom("parallel", "mclapply", "mcmapply")
-export(pbmclapply, pbmcmapply)
+export(pbmclapply, pbmcmapply, progressBar)
