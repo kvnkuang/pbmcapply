@@ -37,7 +37,7 @@ When style = "ETA", it shows a progress bar with the estimated time to completio
 An object of class "txtProgressBar".
 }
 \note{
-Code derived from library pbarETA by Francesco Napolitano \email{franapoli@@gmail.com}.
+Code derived from library \code{pbarETA} (https://github.com/franapoli/pbarETA) by Francesco Napolitano \email{franapoli@@gmail.com}.
 }
 \seealso{
 \code{\link{txtProgressBar}}
@@ -48,7 +48,6 @@ testit <- function(x, ...)
 {
     pb <- progressBar(...)
     for(i in c(0, x, 1)) {
-      Sys.sleep(0.5)
       setTxtProgressBar(pb, i)
     }
     close(pb)
