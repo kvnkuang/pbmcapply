@@ -1,6 +1,6 @@
 validStyles <- c("txt", "ETA")
 
-progressBar <- function(min, max, initial = 0, style = "ETA", substyle = NA,
+progressBar <- function(min = 0, max = 1, initial = 0, style = "ETA", substyle = NA,
                         char = "=", width = NA, file = "") {
   # Check whether arguments are acceptable type
   if (!is.numeric(c(min, max, initial))) {

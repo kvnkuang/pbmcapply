@@ -7,8 +7,8 @@
 \strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
-pbmcmapply(FUN, ...,
-           MoreArgs = NULL, mc.style = 3, mc.cores =getOption("mc.cores", 2L),
+pbmcmapply(FUN, ..., MoreArgs = NULL,
+           mc.style = "ETA", mc.substyle = NA, mc.cores =getOption("mc.cores", 2L),
            ignore.interactive = getOption("ignore.interactive", F))
 }
 \arguments{
@@ -22,10 +22,10 @@ pbmcmapply(FUN, ...,
   a list of other arguments to FUN.
   }
   \item{mc.cores}{
-  see mcmapply.
+  see \code{\link{mcmapply}}.
   }
-  \item{mc.style}{
-  style of the progress bar. See txtProgressBar.
+  \item{mc.style, mc.substyle}{
+  style of the progress bar. See \code{\link{progressBar}}.
   }
   \item{ignore.interactive}{
   whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript). Can be set as an option "ignore.interactive".

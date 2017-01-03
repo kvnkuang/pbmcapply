@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-pbmcapply_1.0.0.tar.gz
+pbmcapply_*.tar.gz
 README.md
+test
