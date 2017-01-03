@@ -1,6 +1,7 @@
-validStyles <- c("txt", "countdown")
+validStyles <- c("txt", "ETA")
 
-progressBar <- function(min, max, initial = 0, style = "countdown", substyle = NA) {
+progressBar <- function(min, max, initial = 0, style = "ETA", substyle = NA,
+                        char = "=", width = NA, file = "") {
   # Check whether arguments are acceptable type
   if (!is.numeric(c(min, max, initial))) {
     stop("arguments of progress bar is not valid.")
@@ -19,7 +20,9 @@ progressBar <- function(min, max, initial = 0, style = "countdown", substyle = N
   # Route to sub-functions based on style
   switch(style,
     "txt" = return(txtProgressBar(min = min, max = max, initial = initial,
-                                  style = ifelse(is.na(substyle), 1, substyle))),
-    "countdown" = return(countdownProgressBar(min = min, max = max, initial = initial))
+                                  style = ifelse(is.na(substyle), 3, substyle), char = char,
+                                  width = width, file = file)),
+    "ETA" = return(txtProgressBarETA(min = min, max = max, initial = initial, char = char,
+                                     width = width, file = file))
   )
 }

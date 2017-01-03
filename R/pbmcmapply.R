@@ -1,4 +1,4 @@
-pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
+pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle = NA,
                        mc.cores =getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F)) {
 
@@ -35,7 +35,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
     return(result)
   }, globals = list(progressFifo = progressFifo), args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
-  invisible(.updateProgress(length, progressFifo, mc.style))
+  invisible(.updateProgress(length, progressFifo, mc.style, mc.substyle))
 
   # Retrieve the result from the future
   return(value(progressMonitor))

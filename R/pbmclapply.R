@@ -1,4 +1,4 @@
-pbmclapply <- function(X, FUN, ..., mc.style = 3,
+pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.cores =getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F)) {
 
@@ -32,7 +32,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3,
     return(result)
   }, globals = list(progressFifo = progressFifo), args = list(X, FUN, ..., mc.cores = mc.cores))
 
-  invisible(.updateProgress(length, progressFifo, mc.style))
+  invisible(.updateProgress(length, progressFifo, mc.style, mc.substyle))
 
   # Retrieve the result from the future
   return(value(progressMonitor))

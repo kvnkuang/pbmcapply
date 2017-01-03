@@ -13,8 +13,8 @@
   return(progressFifo)
 }
 
-.updateProgress <- function(length, progressFifo, mc.style) {
-  pb <- txtProgressBar(0, length, style = mc.style)
+.updateProgress <- function(length, progressFifo, mc.style, mc.substyle) {
+  pb <- progressBar(0, length, style = mc.style, substyle = mc.substyle)
   setTxtProgressBar(pb, 0)
   progress <- 0
 
