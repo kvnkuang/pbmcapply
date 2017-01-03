@@ -19,7 +19,7 @@
   progress <- 0
 
   while (progress < length) {
-    readBin(progressFifo, "double")
+    readBin(progressFifo, "integer")
     progress <- progress + 1
     setTxtProgressBar(pb, progress)
   }

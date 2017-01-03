@@ -25,7 +25,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = 3,
   progressMonitor <- futureCall(function(X, FUN, ..., mc.cores) {
     tryCatch(result <- mclapply(X, function(...) {
       res <- FUN(...)
-      writeBin(1, progressFifo)
+      writeBin(1L, progressFifo)
       return(res)
     }, ..., mc.cores = mc.cores))
 
