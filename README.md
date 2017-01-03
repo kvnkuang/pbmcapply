@@ -24,7 +24,7 @@ install.packages('pbmcapply')
 
 ### Development release on Github 
 
-Version: [![GitHub release](https://img.shields.io/github/release/kvnkuang/pbmcapply.svg?maxAge=2592000)]()
+Version: [![GitHub release](https://img.shields.io/github/release/kvnkuang/pbmcapply.svg?maxAge=2592000)]() [![Build Status](https://travis-ci.org/kvnkuang/pbmcapply.svg?branch=master)](https://travis-ci.org/kvnkuang/pbmcapply)
 
 Project page: https://github.com/kvnkuang/pbmcapply
 
