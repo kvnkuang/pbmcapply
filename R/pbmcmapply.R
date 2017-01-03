@@ -1,5 +1,3 @@
-PORT = 6311
-
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
                        mc.cores =getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F)) {
@@ -17,53 +15,27 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = 3,
       return(nrow(element))
     }
   }, list(...)))
+  .verifyLength(length, "max element has a length of zero.")
 
-  # If the length is zero, return an empty list with a warning message
-  if (length <= 0) {
-    warning("max element has a length of zero.")
-    return(list())
-  }
   # If not in interactive mode, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
   }
 
+  progressFifo <- .establishFifo()
+  on.exit(close(progressFifo), add = T)
+
   progressMonitor <- futureCall(function(FUN, ..., MoreArgs, mc.cores) {
-    socketServer <- socketConnection(open = "wb", port = PORT, blocking = T, server = T)
     tryCatch(result <- mcmapply(function(...) {
       res <- FUN(...)
-      writeBin(1, socketServer)
+      writeBin(1, progressFifo)
       return(res)
-    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores),
-    finally = {
-      close(socketServer)
-    })
+    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
     return(result)
-  }, globals = list(PORT = PORT), args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
+  }, globals = list(progressFifo = progressFifo), args = list(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 
-  pb <- txtProgressBar(0, length, style = mc.style)
-  setTxtProgressBar(pb, 0)
-  progress <- 0
-
-  # Create a socket client and update progress bar accordingly
-  isCreated <- F
-  while(!isCreated) {
-    Sys.sleep(0.5)
-    try(socketClient <- socketConnection(open = "rb", port = PORT, blocking = T, server = F), silent = T)
-    if (exists("socketClient")) {
-      isCreated <- T
-      while (progress < length) {
-        readBin(socketClient, "double")
-        progress <- progress + 1
-        setTxtProgressBar(pb, progress)
-      }
-      close(socketClient)
-    }
-  }
-
-  # Print an line break to the stdout
-  cat("\n")
+  invisible(.updateProgress(length, progressFifo, mc.style))
 
   # Retrieve the result from the future
   return(value(progressMonitor))
