@@ -22,13 +22,13 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
   }
 
-  progressFifo <- .establishFifo()
+  progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
 
   progressMonitor <- futureCall(function(FUN, ..., MoreArgs, mc.cores) {
     tryCatch(result <- mcmapply(function(...) {
       res <- FUN(...)
-      writeBin(1, progressFifo)
+      writeBin(1L, progressFifo)
       return(res)
     }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
 

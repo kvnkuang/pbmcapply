@@ -6,7 +6,7 @@
   }
 }
 
-.establishFifo <- function() {
+.establishFifo <- function(description) {
   # Try to establish a fifo
   progressFifo <- fifo(description = "", open = "w+b", blocking = T)
 
