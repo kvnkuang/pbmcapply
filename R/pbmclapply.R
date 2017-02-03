@@ -19,7 +19,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
     return(mclapply(X, FUN, ..., mc.cores = mc.cores))
   }
 
-  progressFifo <- .establishFifo()
+  progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
 
   progressMonitor <- futureCall(function(X, FUN, ..., mc.cores) {
