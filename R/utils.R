@@ -8,7 +8,7 @@
 
 .establishFifo <- function(description) {
   # Try to establish a fifo
-  progressFifo <- fifo(description = "", open = "w+b", blocking = T)
+  progressFifo <- fifo(description, open = "w+b", blocking = T)
 
   return(progressFifo)
 }
@@ -19,8 +19,7 @@
   progress <- 0
 
   while (progress < length) {
-    readBin(progressFifo, "integer")
-    progress <- progress + 1
+    progress <- progress + sum(readBin(progressFifo, "integer", n = 100))
     setTxtProgressBar(pb, progress)
   }
 

@@ -29,7 +29,7 @@ progressBar(min = 0, max = 1, initial = 0, style = "ETA", substyle = NA,
 \details{
 The progress bar should be closed when finished with: this outputs the final newline character.
 
-When style = "timer", it performs exactly the same as the original \code{txtProgressBar}. In this case, substyle shall be treated as the style in the original \code{txtProgressBar}. Please refer to the 'Detail' of \code{\link{txtProgressBar}} for the meanings of substyles.
+When style = "txt", it performs exactly the same as the original \code{txtProgressBar}. In this case, substyle shall be treated as the style in the original \code{txtProgressBar}. Please refer to the 'Detail' of \code{\link{txtProgressBar}} for the meanings of substyles.
 
 When style = "ETA", it shows a progress bar with the estimated time to completion (ETA). Substyle is not used in this case.
 }
