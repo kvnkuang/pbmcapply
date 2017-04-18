@@ -4,7 +4,7 @@
 \description{
 \code{pbmcmapply} is a wrapper around the \code{mcmapply} function. It adds a progress bar to \code{mcmapply} function.
 
-\strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
+\strong{Parallelization (mc.core > 1) works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
 pbmcmapply(FUN, ..., MoreArgs = NULL,
@@ -39,6 +39,13 @@ lazySqrt <- function(num) {
   return(sqrt(num))
 }
 
+# On Windows, set cores to be 1
+if (.Platform$OS.type == "windows") {
+  cores = 1
+} else {
+  cores = 2
+}
+
 # A lazy and chatty sqrt function.
 # An example of passing arguments to pbmcmapply.
 lazyChattySqrt <- function(num, name) {
@@ -48,6 +55,6 @@ lazyChattySqrt <- function(num, name) {
 }
 
 # Get the sqrt of 1-3 in parallel
-result <- pbmcmapply(lazySqrt, 1:3)
-chattyResult <- pbmcmapply(lazyChattySqrt, 1:3, MoreArgs = list("Bob"))
+result <- pbmcmapply(lazySqrt, 1:3, mc.cores = cores)
+chattyResult <- pbmcmapply(lazyChattySqrt, 1:3, MoreArgs = list("Bob"), mc.cores = cores)
 }

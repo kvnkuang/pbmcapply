@@ -6,6 +6,12 @@
   }
 }
 
+.verifyOSMulticoreSupport <- function(cores, errorMessage) {
+  if (.Platform$OS.type == "windows" & cores > 1) {
+    stop(errorMessage)
+  }
+}
+
 .establishFifo <- function(description) {
   # Try to establish a fifo
   progressFifo <- fifo(description, open = "w+b", blocking = T)

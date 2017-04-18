@@ -6,7 +6,7 @@ A package helps you track and visualize the progress of parallel version of vect
 
 Please check this [blog article](https://kevinkuang.net/tracking-progress-in-r-ad97998c359f) for an comparasion between available methods to track progress in R.
 
-**Notice:** This package works on *nix (Linux, Unix such as macOS) only due to the lack of fork() functionality, which is essential for mcapply, on Windows.
+**Notice:** Parallelization (mc.core > 1) works on *nix (Linux, Unix such as macOS) only due to the lack of fork() functionality, which is essential for mcapply, on Windows.
 
 ## Installation
 

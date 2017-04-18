@@ -22,6 +22,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
   }
 
+  # If running in Windows, mc.cores must be 1
+  .verifyOSMulticoreSupport(mc.cores, "mc.cores > 1 is not supported on Windows due to limitation of mc*apply() functions.")
+
   progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
 
