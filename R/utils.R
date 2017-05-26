@@ -23,12 +23,24 @@
   pb <- progressBar(0, length, style = mc.style, substyle = mc.substyle)
   setTxtProgressBar(pb, 0)
   progress <- 0
+  hasError <- F
 
   while (progress < length) {
-    progress <- progress + sum(readBin(progressFifo, "integer", n = 100))
+    progressUpdate <- readBin(progressFifo, "integer", n = 100)
+
+    # Check if any warning or error in the update
+    if (any(progressUpdate == -1)) {
+      hasError <- T
+      break()
+    }
+
+    progress <- progress + sum(progressUpdate)
     setTxtProgressBar(pb, progress)
   }
 
   # Print an line break to the stdout
   cat("\n")
+
+  # Return error status
+  return(hasError)
 }

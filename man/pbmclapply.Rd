@@ -8,7 +8,8 @@
 }
 \usage{
 pbmclapply(X, FUN, ...,
-           mc.style = "ETA", mc.substyle = NA, mc.cores =getOption("mc.cores", 2L),
+           mc.style = "ETA", mc.substyle = NA,
+           mc.cores =getOption("mc.cores", 2L),
            ignore.interactive = getOption("ignore.interactive", F))
 }
 \arguments{

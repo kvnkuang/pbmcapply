@@ -4,6 +4,15 @@ testMultipleArguments <- function(element, args1, args2, args3, args4) {
   return(paste(sqrt(element) * 10, args1, args2, args3, args4, sep = ", ", collapse = ""))
 }
 
+testErrorHandling <- function(num) {
+  # Sleep randomly between 0 to 0.5 second
+  Sys.sleep(runif(1, 0, 0.5))
+  if (num == 2) {
+    stop("aaa")
+  }
+  return(sqrt(num))
+}
+
 # Tests for pbmclapply
 control <- mclapply(1:20, testMultipleArguments, "alice", "bob", 42, "chris")
 # Test four arguments
