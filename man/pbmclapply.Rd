@@ -4,11 +4,12 @@
 \description{
 \code{pbmclapply} is a wrapper around the \code{mclapply} function. It adds a progress bar to \code{mclapply} function.
 
-\strong{This function works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
+\strong{Parallelization (mc.core > 1) works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
 pbmclapply(X, FUN, ...,
-           mc.style = "ETA", mc.substyle = NA, mc.cores =getOption("mc.cores", 2L),
+           mc.style = "ETA", mc.substyle = NA,
+           mc.cores =getOption("mc.cores", 2L),
            ignore.interactive = getOption("ignore.interactive", F))
 }
 \arguments{
@@ -39,6 +40,13 @@ lazySqrt <- function(num) {
   return(sqrt(num))
 }
 
+# On Windows, set cores to be 1
+if (.Platform$OS.type == "windows") {
+  cores = 1
+} else {
+  cores = 2
+}
+
 # A lazy and chatty sqrt function.
 # An example of passing arguments to pbmclapply.
 lazyChattySqrt <- function(num, name) {
@@ -48,6 +56,6 @@ lazyChattySqrt <- function(num, name) {
 }
 
 # Get the sqrt of 1-3 in parallel
-result <- pbmclapply(1:3, lazySqrt)
-chattyResult <- pbmclapply(1:3, lazyChattySqrt, "Bob")
+result <- pbmclapply(1:3, lazySqrt, mc.cores = cores)
+chattyResult <- pbmclapply(1:3, lazyChattySqrt, "Bob", mc.cores = cores)
 }
