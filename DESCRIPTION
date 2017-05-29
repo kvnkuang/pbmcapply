@@ -6,7 +6,7 @@ Author: Kevin Kuang (aut), Francesco Napolitano (ctb)
 Maintainer: Kevin kuang <kvn.kuang@mail.utoronto.ca>
 Description: A light-weight package helps you track and visualize
   the progress of parallel version of vectorized R functions (mc*apply).
-  Parallelization (mc.core > 1) works on *nix (Linux, Unix such as macOS) system only due to
+  Parallelization (mc.core > 1) works only on *nix (Linux, Unix such as macOS) system due to
   the lack of fork() functionality, which is essential for mc*apply, on Windows.
 Depends: utils, parallel, future
 BugReports: https://github.com/kvnkuang/pbmcapply/issues

@@ -4,7 +4,7 @@
 \description{
 \code{pbmclapply} is a wrapper around the \code{mclapply} function. It adds a progress bar to \code{mclapply} function.
 
-\strong{Parallelization (mc.core > 1) works on *nix (Linux, Unix such as macOS) system only due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
+\strong{Parallelization (mc.core > 1) works only on *nix (Linux, Unix such as macOS) system due to the lack of \code{fork()} functionality, which is essential for mcapply, on Windows.}
 }
 \usage{
 pbmclapply(X, FUN, ...,
