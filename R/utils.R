@@ -6,10 +6,9 @@
   }
 }
 
-.verifyOSMulticoreSupport <- function(cores, errorMessage) {
-  if (.Platform$OS.type == "windows" & cores > 1) {
-    stop(errorMessage)
-  }
+.isOSWindows <- function() {
+  # return(.Platform$OS.type == "windows")
+  return(T)
 }
 
 .establishFifo <- function(description) {
