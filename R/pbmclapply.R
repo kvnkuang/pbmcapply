@@ -1,5 +1,5 @@
 # Debug flag
-DEBUG_FLAG = T
+DEBUG_FLAG = F
 
 # Load R files during development
 if(DEBUG_FLAG) {
