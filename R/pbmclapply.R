@@ -1,9 +1,10 @@
+# Debug flag
+DEBUG_FLAG = F
+
 # Load R files during development
-if(F) {
-  warning("in pbmclapply: disable these lines before publishing package!")
-  source("R/progressBar.R")
-  source("R/txtProgressBarETA.R")
-  source("R/utils.R")
+if(DEBUG_FLAG) {
+  source("R/debugger.R")
+  warning("in pbmclapply.R: disable these lines before publishing package!")
 }
 
 pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
@@ -28,7 +29,33 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
   }
 
   # If running in Windows, mc.cores must be 1
-  .verifyOSMulticoreSupport(mc.cores, "mc.cores > 1 is not supported on Windows due to limitation of mc*apply() functions.")
+  if (.isOSWindows()) {
+    # Stop if multiple cores are assigned
+    if (mc.cores > 1) {
+      warning("mc.cores > 1 is not supported on Windows due to limitation of mc*apply() functions.\n  mc.core is set to 1.")
+      mc.cores = 1
+    }
+
+    ###
+    ### Temp fix to bypass the fifo() on Windows
+    ### TODO: a proper message passing interface on Windows
+    ###
+    # Initialize progress bar
+    pb <- progressBar(0, length, style = mc.style, substyle = mc.substyle)
+    setTxtProgressBar(pb, 0)
+    parentEnvironment <- environment()
+    progress <- 0
+
+    # Update progress bar after within each iteration
+    result <- lapply(X, function(...) {
+      res <- FUN(...)
+      parentEnvironment$progress <- parentEnvironment$progress + 1
+      setTxtProgressBar(pb, progress)
+      return(res)
+    })
+
+    return(result)
+  }
 
   progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
