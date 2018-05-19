@@ -56,7 +56,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
       parentEnvironment$progress <- parentEnvironment$progress + 1
       setTxtProgressBar(pb, progress)
       return(res)
-    })
+    }, ...)
 
     return(result)
   }
