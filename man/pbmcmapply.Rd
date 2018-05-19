@@ -10,7 +10,8 @@
 pbmcmapply(FUN, ..., MoreArgs = NULL,
            mc.style = "ETA", mc.substyle = NA,
            mc.cores =getOption("mc.cores", 2L),
-           ignore.interactive = getOption("ignore.interactive", F))
+           ignore.interactive = getOption("ignore.interactive", F),
+           max.vector.size = getOption("max.vector.size", 1024L))
 }
 \arguments{
   \item{FUN}{
@@ -30,6 +31,9 @@ pbmcmapply(FUN, ..., MoreArgs = NULL,
   }
   \item{ignore.interactive}{
   whether the \code{interactive()} is ignored. If set to TRUE, the progress bar will be printed even in a non-interactive environment (e.g. called by Rscript). Can be set as an option "ignore.interactive".
+  }
+  \item{max.vector.size}{
+  the max size of the vector that can be handled. Please increase this value when your vector is big.
   }
 }
 \examples{

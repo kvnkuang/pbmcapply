@@ -9,7 +9,11 @@ if(DEBUG_FLAG) {
 
 pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.cores =getOption("mc.cores", 2L),
-                       ignore.interactive = getOption("ignore.interactive", F)) {
+                       ignore.interactive = getOption("ignore.interactive", F),
+                       max.vector.size = getOption("max.vector.size", 1024L)) {
+
+  # Set up maximun global size for the future package
+  .setMaxGlobalSize(max.vector.size)
 
   # Set up plan
   originalPlan <- plan("list")
@@ -52,7 +56,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
       parentEnvironment$progress <- parentEnvironment$progress + 1
       setTxtProgressBar(pb, progress)
       return(res)
-    })
+    }, ...)
 
     return(result)
   }

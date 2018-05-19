@@ -9,7 +9,11 @@ if(DEBUG_FLAG) {
 
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle = NA,
                        mc.cores =getOption("mc.cores", 2L),
-                       ignore.interactive = getOption("ignore.interactive", F)) {
+                       ignore.interactive = getOption("ignore.interactive", F),
+                       max.vector.size = getOption("max.vector.size", 1024L)) {
+
+  # Set up maximun global size for the future package
+  .setMaxGlobalSize(max.vector.size)
 
   # Set up plan
   originalPlan <- plan("list")
