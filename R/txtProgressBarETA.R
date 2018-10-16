@@ -86,7 +86,7 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
   .timenow <- NA
   .firstUpdate <- T
 
-  # Kevin - Track the length of the previous line
+  # Kevin - Set previous length
   .prevLength <- 0
 
   nw <- nchar(char, "w")
@@ -116,6 +116,7 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
     nb <- round(width * (value - min) / (max - min))
     pc <- round(100 * (value - min) / (max - min))
 
+    # Kevin - Just return if no need to redraw the progress bar
     if (nb == .nb && pc == .pc && timenow - .timenow < 1) {
       return()
     }
@@ -130,10 +131,17 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
     if (.prevLength != 0) {
       cat(paste(c("\r  |", rep.int(" ", nw * .prevLength + 6)), collapse = ""), file = file)
     }
+
     line = paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
-                sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = "")
+                   sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = "")
     cat(line, file = file)
     .prevLength <<- nchar(line)
+
+    # Kevin - Display elapsed time when completed. Otherwise, display ETA.
+    if (value == max) {
+      cat(paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
+                  sprintf("| %3d%%", pc), ", Elapsed ", formatTime(span)), collapse = ""), file = file)
+    }
 
     flush.console()
     .nb <<- nb
