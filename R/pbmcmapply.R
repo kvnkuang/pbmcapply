@@ -10,7 +10,9 @@ if(DEBUG_FLAG) {
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle = NA,
                        mc.cores =getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),
-                       max.vector.size = getOption("max.vector.size", 1024L)) {
+                       max.vector.size = getOption("max.vector.size", 1024L),
+                       mc.preschedule = TRUE, mc.set.seed = TRUE,
+                       mc.cleanup = TRUE, affinity.list = NULL) {
 
   # Set up maximun global size for the future package
   .setMaxGlobalSize(max.vector.size)
@@ -32,7 +34,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
 
   # If not in interactive mode, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
-    return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores))
+    return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
+                    mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
+                    mc.cleanup = mc.cleanup, affinity.list = affinity.list))
   }
 
   # If running in Windows, mc.cores must be 1
@@ -73,7 +77,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
       res <- FUN(...)
       writeBin(1L, progressFifo)
       return(res)
-    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores)
+    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
+    mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
+    mc.cleanup = mc.cleanup, affinity.list = affinity.list)
 
     # Check if any error was triggered
     if (any(grepl("Error in FUN(...)", result))) {

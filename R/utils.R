@@ -44,5 +44,5 @@
 }
 
 .setMaxGlobalSize <- function(maxSize) {
-  options(future.globals.maxSize= maxSize*1024^2)
+  options(future.globals.maxSize = maxSize * 1024^2)
 }
