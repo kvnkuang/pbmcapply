@@ -82,7 +82,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
     mc.cleanup = mc.cleanup)
 
     # Check if any error was triggered
-    if (any(grepl("Error in FUN(...)", result))) {
+    if (any(grepl("Error in ", result))) {
       # Warn the progress monitor if there's an error
       writeBin(-1L, progressFifo)
     }
