@@ -13,7 +13,7 @@ pbmcmapply(FUN, ..., MoreArgs = NULL,
            ignore.interactive = getOption("ignore.interactive", F),
            max.vector.size = getOption("max.vector.size", 1024L),
            mc.preschedule = TRUE, mc.set.seed = TRUE,
-           mc.cleanup = TRUE, affinity.list = NULL)
+           mc.cleanup = TRUE)
 }
 \arguments{
   \item{FUN}{
@@ -36,7 +36,7 @@ pbmcmapply(FUN, ..., MoreArgs = NULL,
   }
   \item{max.vector.size}{
   the max size of the vector that can be handled. Please increase this value when your vector is big.
-  }\item{mc.preschedule, mc.set.seed, mc.cleanup, affinity.list}{
+  }\item{mc.preschedule, mc.set.seed, mc.cleanup}{
   See \code{\link{mcmapply}}.
   }
 }

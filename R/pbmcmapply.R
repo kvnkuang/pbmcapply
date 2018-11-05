@@ -12,7 +12,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
                        ignore.interactive = getOption("ignore.interactive", F),
                        max.vector.size = getOption("max.vector.size", 1024L),
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
-                       mc.cleanup = TRUE, affinity.list = NULL) {
+                       mc.cleanup = TRUE) {
 
   # Set up maximun global size for the future package
   .setMaxGlobalSize(max.vector.size)
@@ -36,7 +36,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
   if (!interactive() & !ignore.interactive) {
     return(mcmapply(FUN, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
                     mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-                    mc.cleanup = mc.cleanup, affinity.list = affinity.list))
+                    mc.cleanup = mc.cleanup))
   }
 
   # If running in Windows, mc.cores must be 1
@@ -79,7 +79,7 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
       return(res)
     }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
     mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-    mc.cleanup = mc.cleanup, affinity.list = affinity.list)
+    mc.cleanup = mc.cleanup)
 
     # Check if any error was triggered
     if (any(grepl("Error in FUN(...)", result))) {
