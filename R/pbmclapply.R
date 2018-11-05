@@ -12,7 +12,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        ignore.interactive = getOption("ignore.interactive", F),
                        max.vector.size = getOption("max.vector.size", 1024L),
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
-                       mc.cleanup = TRUE, mc.allow.recursive = TRUE, affinity.list = NULL) {
+                       mc.cleanup = TRUE, mc.allow.recursive = TRUE) {
 
   # Set up maximun global size for the future package
   .setMaxGlobalSize(max.vector.size)
@@ -33,7 +33,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
   if (!interactive() & !ignore.interactive) {
     return(mclapply(X, FUN, ..., mc.cores = mc.cores,
                     mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-                    mc.cleanup = mc.cleanup, mc.allow.recursive = mc.allow.recursive, affinity.list = affinity.list))
+                    mc.cleanup = mc.cleanup, mc.allow.recursive = mc.allow.recursive))
   }
 
   # If running in Windows, mc.cores must be 1
@@ -76,7 +76,7 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
       return(res)
     }, ..., mc.cores = mc.cores,
     mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-    mc.cleanup = mc.cleanup, mc.allow.recursive = mc.allow.recursive, affinity.list = affinity.list)
+    mc.cleanup = mc.cleanup, mc.allow.recursive = mc.allow.recursive)
 
     # Check if any error was triggered
     if ("try-error" %in% sapply(result, class)) {

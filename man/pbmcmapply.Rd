@@ -9,7 +9,7 @@
 \usage{
 pbmcmapply(FUN, ..., MoreArgs = NULL,
            mc.style = "ETA", mc.substyle = NA,
-           mc.cores =getOption("mc.cores", 2L),
+           mc.cores = getOption("mc.cores", 2L),
            ignore.interactive = getOption("ignore.interactive", F),
            max.vector.size = getOption("max.vector.size", 1024L),
            mc.preschedule = TRUE, mc.set.seed = TRUE,
