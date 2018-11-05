@@ -32,7 +32,7 @@ Build `pbmcapply` by pasting these commands in your R console:
 
 ```
 library(devtools)
-install_github("kvnkuang/pbmcapply")
+install_github("kvnkuang/pbmcapply", ref = "dev")
 ```
 
 ## License:

@@ -47,19 +47,28 @@ formatTime <- function(seconds) {
 
   ETA <- c(years, months, days, hours, minutes, seconds)
 
+  # Add labels for years, months, days
+  labels <- c("year", "years", "month", "months", "day", "days")
+
   # Kevin - Always show minutes
   startst <- which(ETA > 0)[1]
   if (is.na(startst) | startst == 6)
     startst <- 5
 
-  fmtstr <- rep("%02d", length(ETA))[startst:length(ETA)]
-  fmtstr <- paste(fmtstr, collapse = ":")
-
+  # Kevin - Split year;month;day and HH:MM:SS
+  if (startst <= 3) {
+    # Kevin - Handle plurals
+    ymt <- labels[startst:3 * 2 - as.integer(ETA[startst:3] == 1)]
+    fmtstr <- paste(paste("%01d", ymt, collapse = " "),
+                    paste(rep("%02d", length(ETA) - 3), collapse = ":"))
+  } else {
+    fmtstr <- rep("%02d", length(ETA))[startst:length(ETA)]
+    fmtstr <- paste(fmtstr, collapse = ":")
+  }
 
   return(do.call(sprintf, as.list(c(
     as.list(fmtstr), ETA[startst:length(ETA)]
   ))))
-
 }
 
 txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width = NA,
@@ -76,6 +85,9 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
   .time0 <- NA
   .timenow <- NA
   .firstUpdate <- T
+
+  # Kevin - Set previous length
+  .prevLength <- 0
 
   nw <- nchar(char, "w")
   if (is.na(width)) {
@@ -104,6 +116,7 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
     nb <- round(width * (value - min) / (max - min))
     pc <- round(100 * (value - min) / (max - min))
 
+    # Kevin - Just return if no need to redraw the progress bar
     if (nb == .nb && pc == .pc && timenow - .timenow < 1) {
       return()
     }
@@ -114,9 +127,22 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
     ETA <- (max - .val) * timeXiter
     ETAstr <- formatTime(ETA)
 
-    cat(paste(c("\r  |", rep.int(" ", nw * width + 6)), collapse = ""), file = file)
-    cat(paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
-                sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = ""), file = file)
+    # Kevin - Erase previous line
+    if (.prevLength != 0) {
+      cat(paste(c("\r  |", rep.int(" ", nw * .prevLength + 6)), collapse = ""), file = file)
+    }
+
+    line = paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
+                   sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = "")
+    cat(line, file = file)
+    .prevLength <<- nchar(line)
+
+    # Kevin - Display elapsed time when completed. Otherwise, display ETA.
+    if (value == max) {
+      cat(paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
+                  sprintf("| %3d%%", pc), ", Elapsed ", formatTime(span)), collapse = ""), file = file)
+    }
+
     flush.console()
     .nb <<- nb
     .pc <<- pc
