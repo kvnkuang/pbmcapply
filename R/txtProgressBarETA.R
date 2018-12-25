@@ -97,7 +97,7 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
   # Kevin - Adjust width based on Windows or *nix platforms
   nw <- nchar(char, "w")
   if (.autoWidth) {
-    if (.Platform$OS.type == "windows" || Sys.getenv("COLUMNS") == "") {
+    if (.Platform$OS.type == "windows" | Sys.getenv("COLUMNS") == "") {
       width <- getOption("width")
     } else {
       width <- as.integer(Sys.getenv("COLUMNS"))
