@@ -30,7 +30,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
       return(nrow(element))
     }
   }, list(...)))
-  .verifyLength(length, "max element has a length of zero.")
+  if (!.verifyLength(length)) {
+    return(list())
+  }
 
   # If not in interactive mode, just pass to mclapply
   if (!interactive() & !ignore.interactive) {

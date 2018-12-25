@@ -8,7 +8,7 @@ progressBar <- function(min = 0, max = 1, initial = 0, style = "ETA", substyle =
   }
 
   # Check whether min < max
-  if (min >= max) {
+  if (min > max) {
     stop("must have max bigger than min.")
   }
 

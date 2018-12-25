@@ -1,9 +1,6 @@
-.verifyLength <- function(length, warningMessage) {
-  # If the length is zero, return an empty list with a warning message
-  if (length <= 0) {
-    warning(warningMessage)
-    return(list())
-  }
+.verifyLength <- function(length) {
+  if (length <= 0) return(FALSE)
+  return(TRUE)
 }
 
 .isOSWindows <- function() {

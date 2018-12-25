@@ -27,7 +27,9 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
   }
 
   length <- length(X)
-  .verifyLength("X has a length of zero.")
+  if (!.verifyLength(length)) {
+    return(X)
+  }
 
   # If not in interactive mode and interactive state is not ignored, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
