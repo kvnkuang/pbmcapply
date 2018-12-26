@@ -14,20 +14,14 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE, mc.allow.recursive = TRUE) {
 
-  # Set up maximun global size for the future package
-  .setMaxGlobalSize(max.vector.size)
-
-  # Set up plan
-  originalPlan <- plan("list")
-  on.exit(plan(originalPlan))
-  plan(multiprocess)
-
-  if (!is.vector(X) || is.object(X)) {
+  if (!is.vector(X) | is.object(X)) {
     X <- as.list(X)
   }
 
   length <- length(X)
-  .verifyLength("X has a length of zero.")
+  if (!.verifyLength(length)) {
+    return(X)
+  }
 
   # If not in interactive mode and interactive state is not ignored, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
@@ -64,6 +58,14 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
 
     return(result)
   }
+
+  # Set up maximun global size for the future package
+  .setMaxGlobalSize(max.vector.size)
+
+  # Set up plan
+  originalPlan <- plan("list")
+  on.exit(plan(originalPlan))
+  plan(multiprocess)
 
   progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)

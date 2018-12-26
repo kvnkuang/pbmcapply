@@ -80,25 +80,30 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
 
   .val <- initial
   .killed <- FALSE
-  .nb <- 0L
+  .nb <- 0
   .pc <- -1L
   .time0 <- NA
   .timenow <- NA
   .firstUpdate <- T
+  .autoWidth <- is.na(width)
 
   # Kevin - Set previous length
   .prevLength <- 0
 
-  nw <- nchar(char, "w")
-  if (is.na(width)) {
-    width <- getOption("width")
-    width <- width - 20L
-    width <- trunc(width / nw)
-  }
-
-  if (max <= min) {
+  if (max < min) {
     stop("must have 'max' > 'min'")
   }
+
+  # Kevin - Adjust width based on Windows or *nix platforms
+  nw <- nchar(char, "w")
+  if (.autoWidth) {
+    if (.Platform$OS.type == "windows" | Sys.getenv("COLUMNS") == "") {
+      width <- getOption("width")
+    } else {
+      width <- as.integer(Sys.getenv("COLUMNS"))
+    }
+  }
+  width <- trunc(width / nw)
 
   up <- function(value, calledOnCreation = F) {
     timenow <- proc.time()[["elapsed"]]
@@ -113,39 +118,48 @@ txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width 
     }
 
     .val <<- value
-    nb <- round(width * (value - min) / (max - min))
-    pc <- round(100 * (value - min) / (max - min))
+    nb <- (value - min) / (max - min)
+    pc <- round(100 * nb)
 
-    # Kevin - Just return if no need to redraw the progress bar
-    if (nb == .nb && pc == .pc && timenow - .timenow < 1) {
-      return()
+    # Kevin - if width is too small, we cannot draw a proper progress bar
+    if (width < 40) {
+      line = sprintf("\r  %3d%%   ", pc)
+    } else {
+
+      # Kevin - Just return if no need to redraw the progress bar
+      if (nb == .nb && pc == .pc && timenow - .timenow < 1) {
+        return()
+      }
+
+      .timenow <<- timenow
+      span <- timenow - .time0
+      timeXiter <- span / (.val - min)
+      ETA <- (max - .val) * timeXiter
+      ETAstr <- formatTime(ETA)
+
+      # Kevin - Display elapsed time when completed. Otherwise, display ETA.
+      if (value == max) {
+        elapsedString <- paste(c(sprintf("| %3d%%", pc), ", Elapsed ", formatTime(span)), collapse = "")
+        barWidth <- width - nchar("\r  |") - nchar(elapsedString)
+        barFill <- round(barWidth * nb)
+        line = paste(c("\r  |", rep.int(char, barFill),
+                       rep.int(" ", nw * (barWidth - barFill)), elapsedString), collapse = "")
+      } else {
+        ETAString <- paste(c(sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = "")
+        barWidth <- width - nchar("\r  |") - nchar(ETAString)
+        barFill <- round(barWidth * nb)
+        line = paste(c("\r  |", rep.int(char, barFill),
+                       rep.int(" ", nw * (barWidth - barFill)), ETAString), collapse = "")
+      }
+
+      .nb <<- nb
+      .pc <<- pc
     }
 
-    .timenow <<- timenow
-    span <- timenow - .time0
-    timeXiter <- span / (.val - min)
-    ETA <- (max - .val) * timeXiter
-    ETAstr <- formatTime(ETA)
-
-    # Kevin - Erase previous line
-    if (.prevLength != 0) {
-      cat(paste(c("\r  |", rep.int(" ", nw * .prevLength + 6)), collapse = ""), file = file)
-    }
-
-    line = paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
-                   sprintf("| %3d%%", pc), ", ETA ", ETAstr), collapse = "")
     cat(line, file = file)
-    .prevLength <<- nchar(line)
-
-    # Kevin - Display elapsed time when completed. Otherwise, display ETA.
-    if (value == max) {
-      cat(paste(c("\r  |", rep.int(char, nb), rep.int(" ", nw * (width - nb)),
-                  sprintf("| %3d%%", pc), ", Elapsed ", formatTime(span)), collapse = ""), file = file)
-    }
-
     flush.console()
-    .nb <<- nb
-    .pc <<- pc
+
+    .prevLength <<- nchar(line)
   }
 
   getVal <- function() {

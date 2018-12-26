@@ -14,14 +14,6 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE) {
 
-  # Set up maximun global size for the future package
-  .setMaxGlobalSize(max.vector.size)
-
-  # Set up plan
-  originalPlan <- plan("list")
-  on.exit(plan(originalPlan))
-  plan(multiprocess)
-
   # Get the max length of elements in ...
   length <- max(mapply(function(element) {
     if (is.null(nrow(element))) {
@@ -30,7 +22,9 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
       return(nrow(element))
     }
   }, list(...)))
-  .verifyLength(length, "max element has a length of zero.")
+  if (!.verifyLength(length)) {
+    return(list())
+  }
 
   # If not in interactive mode, just pass to mclapply
   if (!interactive() & !ignore.interactive) {
@@ -67,6 +61,14 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
 
     return(result)
   }
+
+  # Set up maximun global size for the future package
+  .setMaxGlobalSize(max.vector.size)
+
+  # Set up plan
+  originalPlan <- plan("list")
+  on.exit(plan(originalPlan))
+  plan(multiprocess)
 
   progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
