@@ -8,8 +8,12 @@ Description: A light-weight package helps you track and visualize
   the progress of parallel version of vectorized R functions (mc*apply).
   Parallelization (mc.core > 1) works only on *nix (Linux, Unix such as macOS) system due to
   the lack of fork() functionality, which is essential for mc*apply, on Windows.
-Depends: utils, parallel, future
+Depends: utils, parallel
 BugReports: https://github.com/kvnkuang/pbmcapply/issues
 URL: https://github.com/kvnkuang/pbmcapply
 License: MIT + file LICENSE
 LazyData: TRUE
+LinkingTo: 
+    Rcpp
+Imports: 
+    Rcpp

@@ -1,4 +1,5 @@
-importFrom("future", "futureCall", "value", "plan", "multiprocess")
+useDynLib('pbmcapply', .registration = TRUE)
+importFrom('Rcpp', 'sourceCpp')
 importFrom("utils", "setTxtProgressBar", "txtProgressBar", "flush.console")
 importFrom("parallel", "mclapply", "mcmapply")
 export(pbmclapply, pbmcmapply, progressBar)

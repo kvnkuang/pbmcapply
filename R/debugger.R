@@ -1,6 +1,5 @@
 # Load packages
 library(parallel)
-library(future)
 library(utils)
 
 # Load R scripts
