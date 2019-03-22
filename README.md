@@ -39,8 +39,8 @@ install_github("kvnkuang/pbmcapply", ref = "dev")
 
 Many thanks to all contributors for their time and effort to make this project better.
 
-- Quyu Kong
-- Francesco Napolitano
+- Quyu Kong ([@qykong](https://github.com/qykong))
+- Francesco Napolitano ([@franapoli](https://github.com/franapoli))
 
 ## License:
 
