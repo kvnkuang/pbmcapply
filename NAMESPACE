@@ -2,6 +2,7 @@
 
 export(pbmclapply)
 export(pbmcmapply)
+export(progressBar)
 import(parallel)
 importFrom(parallel,mclapply)
 importFrom(parallel,mcmapply)
