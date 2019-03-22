@@ -7,6 +7,11 @@
 # include <signal.h>
 #endif
 
+void R_init_pbmcapply(DllInfo* info) {
+  R_registerRoutines(info, NULL, NULL, NULL, NULL);
+  R_useDynamicSymbols(info, TRUE);
+}
+
 SEXP setpgid_(SEXP x_) {
   int res = 0;
 

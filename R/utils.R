@@ -105,6 +105,7 @@
   }
 }
 
+#' @useDynLib pbmcapply, .registration=TRUE
 #' @useDynLib pbmcapply setpgid_
 .setpgid <- function(pid) {
   .Call(setpgid_, pid)
