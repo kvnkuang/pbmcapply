@@ -5,3 +5,4 @@
 .RData
 
 man/\.Rapp\.history
+.vscode

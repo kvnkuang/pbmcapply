@@ -12,7 +12,6 @@ if(DEBUG_FLAG) {
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle = NA,
                        mc.cores = getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),
-                       max.vector.size = getOption("max.vector.size", 1024L),
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE) {
 
@@ -102,5 +101,5 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
     warning("scheduled cores encountered errors in user code")
   }
 
-  return(results)
+  return(.suppressSelectChildrenWarning(results))
 }

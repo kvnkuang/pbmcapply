@@ -12,7 +12,6 @@ if(DEBUG_FLAG) {
 pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.cores = getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),
-                       max.vector.size = getOption("max.vector.size", 1024L),
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE, mc.allow.recursive = TRUE) {
 
@@ -99,5 +98,5 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
     warning("scheduled cores encountered errors in user code")
   }
 
-  return(results)
+  return(.suppressSelectChildrenWarning(results))
 }
