@@ -13,7 +13,4 @@ BugReports: https://github.com/kvnkuang/pbmcapply/issues
 URL: https://github.com/kvnkuang/pbmcapply
 License: MIT + file LICENSE
 LazyData: TRUE
-LinkingTo: 
-    Rcpp
-Imports: 
-    Rcpp
+RoxygenNote: 6.1.1

@@ -71,6 +71,7 @@ formatTime <- function(seconds) {
   ))))
 }
 
+#' @importFrom utils setTxtProgressBar flush.console
 txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width = NA,
                             title, label, file = "") {
 

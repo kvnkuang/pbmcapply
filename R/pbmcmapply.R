@@ -7,6 +7,8 @@ if(DEBUG_FLAG) {
   warning("in pbmcmapply.R: disable these lines before publishing package!")
 }
 
+#' @importFrom parallel mcmapply
+#' @export
 pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle = NA,
                        mc.cores = getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),

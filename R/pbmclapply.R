@@ -7,6 +7,8 @@ if(DEBUG_FLAG) {
   warning("in pbmclapply.R: disable these lines before publishing package!")
 }
 
+#' @importFrom parallel mclapply
+#' @export
 pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.cores = getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),

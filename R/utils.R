@@ -45,35 +45,50 @@
 # is assigned to the forked process in order to be able
 # to kill the child process and its descendants on exit
 # of the main process
+# Copyright (C) 1995-2018 The R Core Team
+#' @import parallel
 .customized_mcparallel <- function (expr, name, mc.set.seed = TRUE, silent = FALSE, mc.affinity = NULL,
                                    mc.interactive = FALSE, detached = FALSE)
 {
-  f <- parallel:::mcfork(detached)
+  # loading hidden functions
+  pkg <- asNamespace('parallel')
+  mcfork <- get('mcfork', pkg)
+  mc.advance.stream <- get('mc.advance.stream', pkg)
+  mcexit <- get('mcexit', pkg)
+  mcinteractive <- get('mcinteractive', pkg)
+  sendMaster <- get('sendMaster', pkg)
+  mcaffinity <- get('mcaffinity', pkg)
+  closeStdout <- get('closeStdout', pkg)
+  mc.set.stream <- get('mc.set.stream', pkg)
+
+  f <- mcfork(detached)
   env <- parent.frame()
   if (isTRUE(mc.set.seed))
-    parallel:::mc.advance.stream()
+    mc.advance.stream()
   if (inherits(f, "masterProcess")) {
-    on.exit(parallel:::mcexit(1L, structure("fatal error in wrapper code",
+    on.exit(mcexit(1L, structure("fatal error in wrapper code",
                                             class = "try-error")))
     if (isTRUE(mc.set.seed))
-      parallel:::mc.set.stream()
+      mc.set.stream()
     mc.interactive <- as.logical(mc.interactive)
     if (isTRUE(mc.interactive))
-      parallel:::mcinteractive(TRUE)
+      mcinteractive(TRUE)
     if (isTRUE(!mc.interactive))
-      parallel:::mcinteractive(FALSE)
+      mcinteractive(FALSE)
     if (!is.null(mc.affinity))
-      parallel:::mcaffinity(mc.affinity)
+      mcaffinity(mc.affinity)
     if (isTRUE(silent))
-      parallel:::closeStdout(TRUE)
+      closeStdout(TRUE)
     if (detached) {
-      on.exit(parallel:::mcexit(1L))
+      on.exit(mcexit(1L))
       eval(expr, env)
-      parallel:::mcexit(0L)
+      mcexit(0L)
     }
-    setpgid(f$pid)
-    parallel:::sendMaster(try(eval(expr, env), silent = TRUE))
-    parallel:::mcexit(0L)
+    # reset the group process id of the forked process
+    .setpgid(f$pid)
+
+    sendMaster(try(eval(expr, env), silent = TRUE))
+    mcexit(0L)
   }
   if (!missing(name) && !is.null(name))
     f$name <- as.character(name)[1L]
@@ -84,7 +99,18 @@
 .cleanup <- function(pid) {
   # kill the process and its descendants with group process id
   # which is set to its pid
-  killp(pid)
-  # clean up the zombie process
-  invisible(mccollect(pid))
+  if (.killp(pid)) {
+    # clean up the zombie process
+    invisible(mccollect(pid))
+  }
+}
+
+#' @useDynLib pbmcapply setpgid_
+.setpgid <- function(pid) {
+  .Call(setpgid_, pid)
+}
+
+#' @useDynLib pbmcapply killp_
+.killp <- function(pgid) {
+  .Call(killp_, pgid)
 }
