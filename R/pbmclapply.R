@@ -98,5 +98,5 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
     warning("scheduled cores encountered errors in user code")
   }
 
-  return(results)
+  return(.suppressSelectChildrenWarning(results))
 }

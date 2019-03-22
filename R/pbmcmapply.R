@@ -101,5 +101,5 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
     warning("scheduled cores encountered errors in user code")
   }
 
-  return(results)
+  return(.suppressSelectChildrenWarning(results))
 }

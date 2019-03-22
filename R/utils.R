@@ -115,3 +115,20 @@
 .killp <- function(pgid) {
   .Call(killp_, pgid)
 }
+
+# Suppress the selectChildren() warning by mccollect.
+# It is a R-core bug introduced in 3.5.0.
+# Bug report here: https://github.com/HenrikBengtsson/future/commit/915390701c527f558bcc4c9955703c27d34fc5c6
+.suppressSelectChildrenWarning <- function(expr) {
+  expr <- tryCatch({
+    expr
+  }, warning = function(w) {
+    if (grepl("In selectChildren(pids[!fin], -1)", w$message, fixed = T)) {
+      return(suppressWarnings(expr))
+    } else {
+      return(expr)
+    }
+  })
+
+  return(expr)
+}
