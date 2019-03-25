@@ -4,3 +4,4 @@ pbmcapply_*.tar.gz
 README.md
 test
 .travis.yml
+.vscode

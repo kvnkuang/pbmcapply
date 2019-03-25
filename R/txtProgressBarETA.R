@@ -1,16 +1,16 @@
-#' A progress bar with estimated time to completion.
-#'
-#' @details This is an extended version of the \code{txtProgressBar}
-#' function from the \code{utils} package. Please refer to that for
-#' documentation (\code{help(utils::txtProgressBar)}). The original
-#' \code{utils::setTxtProgressBar} can be used to update the bar. Use
-#' \code{library(pbarETA)} to override \code{utils::setTxtProgressBar}
-#' with \code{pbarETA::setTxtProgressBar}. Use
-#' \code{help(setTxtProgressBar, "utils")} to get help about the
-#' original function.
-#'
-#' @author Francesco Napolitano \email{franapoli@@gmail.com}
-#' @license LGPL-3
+# A progress bar with estimated time to completion.
+#
+# @details This is an extended version of the \code{txtProgressBar}
+# function from the \code{utils} package. Please refer to that for
+# documentation (\code{help(utils::txtProgressBar)}). The original
+# \code{utils::setTxtProgressBar} can be used to update the bar. Use
+# \code{library(pbarETA)} to override \code{utils::setTxtProgressBar}
+# with \code{pbarETA::setTxtProgressBar}. Use
+# \code{help(setTxtProgressBar, "utils")} to get help about the
+# original function.
+#
+# @author Francesco Napolitano \email{franapoli@@gmail.com}
+# @license LGPL-3
 
 # Format time from seconds to YYMMDD HHMMSS format.
 # Comment added by Kevin Kuang.
@@ -71,6 +71,7 @@ formatTime <- function(seconds) {
   ))))
 }
 
+#' @importFrom utils setTxtProgressBar flush.console
 txtProgressBarETA <- function (min = 0, max = 1, initial = 0, char = "=", width = NA,
                             title, label, file = "") {
 

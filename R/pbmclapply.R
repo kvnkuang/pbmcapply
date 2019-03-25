@@ -7,12 +7,15 @@ if(DEBUG_FLAG) {
   warning("in pbmclapply.R: disable these lines before publishing package!")
 }
 
+#' @importFrom parallel mclapply
+#' @export
 pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
-                       mc.cores =getOption("mc.cores", 2L),
+                       mc.cores = getOption("mc.cores", 2L),
                        ignore.interactive = getOption("ignore.interactive", F),
-                       max.vector.size = getOption("max.vector.size", 1024L),
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE, mc.allow.recursive = TRUE) {
+
+  FUN <- match.fun(FUN)
 
   if (!is.vector(X) | is.object(X)) {
     X <- as.list(X)
@@ -59,18 +62,10 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
     return(result)
   }
 
-  # Set up maximun global size for the future package
-  .setMaxGlobalSize(max.vector.size)
-
-  # Set up plan
-  originalPlan <- plan("list")
-  on.exit(plan(originalPlan))
-  plan(multiprocess)
-
   progressFifo <- .establishFifo(tempfile())
   on.exit(close(progressFifo), add = T)
 
-  progressMonitor <- futureCall(function(X, FUN, ..., mc.cores) {
+  progressMonitor <- .customized_mcparallel({
     # Get results
     result <- mclapply(X, function(...) {
       res <- FUN(...)
@@ -89,18 +84,21 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
     # Close the FIFO connection.
     close(progressFifo)
 
-    return(result)
-  }, globals = list(progressFifo = progressFifo), args = list(X, FUN, ..., mc.cores = mc.cores))
+    result
+  })
+
+  # clean up processes on exit
+  on.exit(.cleanup(progressMonitor$pid), add = T)
 
   hasErrorInProgress <- .updateProgress(length, progressFifo, mc.style, mc.substyle)
 
-  # Retrieve the result from the future
-  results <- value(progressMonitor)
+  # Retrieve the result
+  results <- mccollect(progressMonitor$pid)[[as.character(progressMonitor$pid)]]
 
-  # Check if errors happened in the future
+  # Check if errors happened
   if (hasErrorInProgress) {
     warning("scheduled cores encountered errors in user code")
   }
 
-  return(results)
+  return(.suppressSelectChildrenWarning(results))
 }

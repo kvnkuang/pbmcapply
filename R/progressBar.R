@@ -1,5 +1,7 @@
 validStyles <- c("txt", "ETA")
 
+#' @importFrom utils txtProgressBar
+#' @export
 progressBar <- function(min = 0, max = 1, initial = 0, style = "ETA", substyle = NA,
                         char = "=", width = NA, file = "") {
   # Check whether arguments are acceptable type
