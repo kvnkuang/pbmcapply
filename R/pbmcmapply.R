@@ -15,6 +15,8 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE) {
 
+  FUN <- match.fun(FUN)
+
   # Get the max length of elements in ...
   length <- max(mapply(function(element) {
     if (is.null(nrow(element))) {

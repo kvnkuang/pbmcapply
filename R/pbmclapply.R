@@ -15,6 +15,8 @@ pbmclapply <- function(X, FUN, ..., mc.style = "ETA", mc.substyle = NA,
                        mc.preschedule = TRUE, mc.set.seed = TRUE,
                        mc.cleanup = TRUE, mc.allow.recursive = TRUE) {
 
+  FUN <- match.fun(FUN)
+
   if (!is.vector(X) | is.object(X)) {
     X <- as.list(X)
   }
