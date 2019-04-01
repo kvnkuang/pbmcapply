@@ -40,6 +40,15 @@
   return(hasError)
 }
 
+# Handle the "missing global mccollect function" NOTE in CRAN check on Windows
+mccollect <- function(...) {
+  if (.Platform$OS.type == "windows") {
+    warning("mccollect is not available on Windows")
+  } else {
+    parallel::mccollect(...)
+  }
+}
+
 # code from r-core source (https://svn.r-project.org/R/tags/R-3-5-3/src/library/parallel/R/unix/mcparallel.R)
 # with a simple modification where a group process id
 # is assigned to the forked process in order to be able
