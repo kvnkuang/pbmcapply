@@ -18,14 +18,19 @@
   pb <- progressBar(0, length, style = mc.style, substyle = mc.substyle)
   setTxtProgressBar(pb, 0)
   progress <- 0
-  hasError <- F
+  hasErrorWarning <- 0
 
   while (progress < length) {
     progressUpdate <- readBin(progressFifo, "integer", n = 100)
 
     # Check if any warning or error in the update
-    if (any(progressUpdate == -1)) {
-      hasError <- T
+    # Negative progress updates indicate:
+    # Errors (-2) or warnings (-1)
+    if (any(progressUpdate == -2)) {
+      hasErrorWarning <- -2
+      break()
+    } else if (any(progressUpdate == -1)) {
+      hasErrorWarning <- -1
       break()
     }
 
@@ -37,7 +42,7 @@
   cat("\n")
 
   # Return error status
-  return(hasError)
+  return(hasErrorWarning)
 }
 
 # Handle the "missing global mccollect function" NOTE in CRAN check on Windows
@@ -45,7 +50,7 @@ mccollect <- function(...) {
   if (.Platform$OS.type == "windows") {
     warning("mccollect is not available on Windows")
   } else {
-    parallel::mccollect(...)
+    suppressWarnings(parallel::mccollect(...))
   }
 }
 
@@ -123,21 +128,4 @@ mccollect <- function(...) {
 #' @useDynLib pbmcapply killp_
 .killp <- function(pgid) {
   .Call(killp_, pgid)
-}
-
-# Suppress the selectChildren() warning by mccollect.
-# It is a R-core bug introduced in 3.5.0.
-# Bug report here: https://github.com/HenrikBengtsson/future/commit/915390701c527f558bcc4c9955703c27d34fc5c6
-.suppressSelectChildrenWarning <- function(expr) {
-  expr <- tryCatch({
-    expr
-  }, warning = function(w) {
-    if (grepl("In selectChildren(pids[!fin], -1)", w$message, fixed = T)) {
-      return(suppressWarnings(expr))
-    } else {
-      return(expr)
-    }
-  })
-
-  return(expr)
 }

@@ -70,18 +70,35 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
 
   progressMonitor <- .customized_mcparallel({
     # Get results
-    result <- mcmapply(function(...) {
-      res <- FUN(...)
-      writeBin(1L, progressFifo)
-      return(res)
-    }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
-    mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
-    mc.cleanup = mc.cleanup)
+    # Derived from `tryCatch.W.E`
+    # Copyright (C) 2010-2012  The R Core Team
+    # Handle warnings
+    W <- NULL
+    w.handler <- function(w) {
+      W <<- w
+      invokeRestart("muffleWarning")
+    }
 
-    # Check if any error was triggered
-    if (any(grepl("Error in ", result))) {
-      # Warn the progress monitor if there's an error
+    result <- withCallingHandlers(tryCatch(
+      {
+        mcmapply(function(...) {
+          res <- FUN(...)
+          writeBin(1L, progressFifo)
+          return(res)
+        }, ..., MoreArgs = MoreArgs, mc.cores = mc.cores,
+        mc.preschedule = mc.preschedule, mc.set.seed = mc.set.seed,
+        mc.cleanup = mc.cleanup)
+      }, error = function(cond) {
+        # Errors are represented as -3
+        writeBin(-2L, progressFifo)
+        return(cond)
+      }),
+      warning=w.handler)
+
+    # Check if warnings are triggered
+    if (!is.null(W)) {
       writeBin(-1L, progressFifo)
+      result = list(value = result, warning = W)
     }
 
     # Close the FIFO connection
@@ -96,12 +113,15 @@ pbmcmapply <- function(FUN, ..., MoreArgs = NULL, mc.style = "ETA", mc.substyle 
   hasErrorInProgress <- .updateProgress(length, progressFifo, mc.style, mc.substyle)
 
   # Retrieve the result
-  results <- mccollect(progressMonitor$pid)[[as.character(progressMonitor$pid)]]
+  results <- suppressWarnings(mccollect(progressMonitor$pid)[[as.character(progressMonitor$pid)]])
 
   # Check if errors happened
-  if (hasErrorInProgress) {
-    warning("scheduled cores encountered errors in user code")
+  if (hasErrorInProgress == -1) {
+    warning(results$warning)
+    return(results$value)
+  } else if (hasErrorInProgress == -2) {
+    stop(results)
   }
 
-  return(.suppressSelectChildrenWarning(results))
+  return(results)
 }
