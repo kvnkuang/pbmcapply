@@ -35,13 +35,16 @@ library(devtools)
 install_github("kvnkuang/pbmcapply", ref = "dev")
 ```
 
-## Contributors:
+## Contributors
 
 Many thanks to all contributors for their time and effort to make this project better.
 
 - Quyu Kong ([@qykong](https://github.com/qykong))
 - Francesco Napolitano ([@franapoli](https://github.com/franapoli))
+- Thierry Gosselin ([@thierrygosselin](https://github.com/thierrygosselin))
+- aitap ([@aitap](https://github.com/aitap))
+- Gergely Daróczi ([daroczig](https://github.com/daroczig))
 
-## License:
+## License
 
 [MIT license](https://opensource.org/licenses/MIT)
