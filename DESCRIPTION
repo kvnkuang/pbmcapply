@@ -1,7 +1,7 @@
 Package: pbmcapply
 Type: Package
 Title: Tracking the Progress of Mc*pply with Progress Bar
-Version: 1.5.0
+Version: 1.5.1
 Author: Kevin Kuang (aut), Quyu Kong (ctb), Francesco Napolitano (ctb)
 Maintainer: Kevin kuang <kvn.kuang@mail.utoronto.ca>
 Description: A light-weight package helps you track and visualize
@@ -12,6 +12,5 @@ Depends: utils, parallel
 BugReports: https://github.com/kvnkuang/pbmcapply/issues
 URL: https://github.com/kvnkuang/pbmcapply
 License: MIT + file LICENSE
-LazyData: TRUE
 RoxygenNote: 6.1.1
 Encoding: UTF-8
