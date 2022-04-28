@@ -6,3 +6,4 @@
 
 man/\.Rapp\.history
 .vscode
+.DS_Store
