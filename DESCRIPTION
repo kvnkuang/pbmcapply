@@ -12,6 +12,5 @@ Depends: utils, parallel
 BugReports: https://github.com/kvnkuang/pbmcapply/issues
 URL: https://github.com/kvnkuang/pbmcapply
 License: MIT + file LICENSE
-LazyData: TRUE
 RoxygenNote: 6.1.1
 Encoding: UTF-8
